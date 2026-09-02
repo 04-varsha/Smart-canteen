@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCanteen | Payment</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">🍴 SmartCanteen</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+    </div>
+
+</nav>
+
+
+<section class="payment-page">
+
+    <div class="section-title">
+
+        <p>CHECKOUT</p>
+
+        <h1>Complete Payment</h1>
+
+    </div>
+
+
+    <div class="payment-layout">
+
+        <div class="payment-box">
+
+            <h2>Payment Method</h2>
+
+            <label class="payment-option">
+                <input
+                    type="radio"
+                    name="payment"
+                    value="UPI"
+                    checked
+                >
+                📱 UPI
+            </label>
+
+            <label class="payment-option">
+                <input
+                    type="radio"
+                    name="payment"
+                    value="Card"
+                >
+                💳 Card
+            </label>
+
+            <label class="payment-option">
+                <input
+                    type="radio"
+                    name="payment"
+                    value="Cash"
+                >
+                💵 Cash
+            </label>
+
+            <button
+                class="primary-btn full-btn"
+                onclick="makePayment()"
+            >
+                Pay <span id="paymentAmount">₹0</span>
+            </button>
+
+        </div>
+
+
+        <div class="payment-summary">
+
+            <h2>Order Summary</h2>
+
+            <div id="paymentItems"></div>
+
+            <hr>
+
+            <div class="total-row">
+                <span>Total</span>
+                <span id="paymentTotal">₹0</span>
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<div id="successModal" class="modal">
+
+    <div class="modal-content">
+
+        <div class="success-icon">✓</div>
+
+        <h2>Payment Successful!</h2>
+
+        <p>
+            Your order has been placed successfully.
+        </p>
+
+        <a href="menu.html" class="primary-btn">
+            Back to Menu
+        </a>
+
+    </div>
+
+</div>
+
+
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>SmartCanteen | Staff</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">🍴 SmartCanteen</div>
+
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="menu.html">Student Menu</a>
+    </div>
+
+</nav>
+
+
+<section class="staff-page">
+
+    <div class="section-title">
+
+        <p>STAFF DASHBOARD</p>
+
+        <h1>Menu Management</h1>
+
+    </div>
+
+
+    <div class="staff-layout">
+
+        <!-- ADD ITEM -->
+
+        <div class="staff-form">
+
+            <h2 id="formTitle">Add New Food Item</h2>
+
+            <input
+                type="hidden"
+                id="editIndex"
+                value="-1"
+            >
+
+            <label>Food Name</label>
+
+            <input
+                type="text"
+                id="foodName"
+                placeholder="Example: Masala Dosa"
+            >
+
+
+            <label>Category</label>
+
+            <select id="foodCategory">
+
+                <option value="Breakfast">Breakfast</option>
+
+                <option value="Snacks">Snacks</option>
+
+                <option value="Meals">Meals</option>
+
+                <option value="Beverages">Beverages</option>
+
+                <option value="Desserts">Desserts</option>
+
+            </select>
+
+
+            <label>Price</label>
+
+            <input
+                type="number"
+                id="foodPrice"
+                placeholder="Example: 60"
+            >
+
+
+            <label>Description</label>
+
+            <textarea
+                id="foodDescription"
+                placeholder="Describe the food item"
+            ></textarea>
+
+
+            <label>Food Emoji</label>
+
+            <input
+                type="text"
+                id="foodImage"
+                placeholder="🍔"
+            >
+
+
+            <label>Availability</label>
+
+            <select id="foodAvailability">
+
+                <option value="Available">
+                    Available
+                </option>
+
+                <option value="Unavailable">
+                    Unavailable
+                </option>
+
+            </select>
+
+
+            <button
+                class="primary-btn full-btn"
+                onclick="saveFood()"
+            >
+                Save Food Item
+            </button>
+
+
+            <button
+                class="clear-btn full-btn"
+                onclick="clearForm()"
+            >
+                Clear
+            </button>
+
+        </div>
+
+
+        <!-- MENU TABLE -->
+
+        <div class="staff-menu">
+
+            <h2>Current Menu</h2>
+
+            <div id="staffMenuContainer"></div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<script src="staff.js"></script>
+
+</body>
+</html>
