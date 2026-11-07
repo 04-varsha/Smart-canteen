@@ -19,6 +19,7 @@ function escapeHTML(value) {
   }[ch]));
 }
 
+
 /* ---------- API helper ---------- */
 async function api(url, options = {}) {
   const token = localStorage.getItem("sc_token");
@@ -207,7 +208,7 @@ async function renderCheckout() {
       description: "Order " + number,
       order_id: data.razorpay.orderId,
       prefill: { name: customer.name, email: customer.email },
-      theme: { color: "#315c43" },
+      theme: { color: "#c2410c" },
       handler: async (response) => {
         try {
           await api("/orders/" + encodeURIComponent(number) + "/verify-payment", {
@@ -302,9 +303,19 @@ async function renderConfirmation() {
     root.innerHTML = `<h2>We could not load your order</h2><p>${escapeHTML(e.message)}</p><a class="btn" href="menu.html">Go to menu</a>`;
   }
 }
-
+/* ---------- Logo in the header (all pages) ---------- */
+function addBrandLogo() {
+  const brand = document.querySelector(".brand");
+  if (!brand) return;
+  const img = new Image();
+  img.className = "brand-logo";
+  img.alt = "RV University Bengaluru logo";
+  img.onload = () => brand.prepend(img); // only shown if the file exists
+  img.src = "images/rvu-logo.png";
+}
 /* ---------- Start ---------- */
 document.addEventListener("DOMContentLoaded", () => {
+  addBrandLogo();
   updateCartCount();
   renderMenu();
   renderCart();
