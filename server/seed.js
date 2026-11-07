@@ -1,5 +1,5 @@
-// Run once:  npm run seed
-// Replaces the menu collection with the default items.
+const dns = require('dns');
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 require("dotenv").config();
 const mongoose = require("mongoose");
 const MenuItem = require("./models/MenuItem");
