@@ -1,399 +1,189 @@
-function getStaffMenu() {
+/* staff.js - staff page only. Needs script.js loaded first (api, money, escapeHTML). */
 
-    return JSON.parse(
-        localStorage.getItem("smartMenu")
-    ) || [];
-
+// Online orders show a Paid / Unpaid badge; counter orders are paid at the counter
+function paymentLabel(o) {
+  if (o.payment !== "Pay online") return "Pay at counter";
+  const cls = o.paymentStatus === "Paid" ? "paid" : "unpaid";
+  return `Online <span class="badge ${cls}">${escapeHTML(o.paymentStatus)}</span>`;
 }
 
+/* ---------- Staff page ---------- */
+function renderAdmin() {
+  const form = document.getElementById("item-form");
+  if (!form) return;
 
-function saveStaffMenu(menu) {
+  const loginBox = document.getElementById("login-box");
+  const loginForm = document.getElementById("login-form");
+  const loginError = document.getElementById("login-error");
+  const staffArea = document.getElementById("staff-area");
+  const list = document.getElementById("admin-items");
+  const ordersBox = document.getElementById("admin-orders");
+  const idField = document.getElementById("item-id");
+  const nameField = document.getElementById("item-name");
+  const priceField = document.getElementById("item-price");
+  const catField = document.getElementById("item-category");
+  const emojiField = document.getElementById("item-emoji");
+  const formError = document.getElementById("form-error");
+  let menu = [];
 
-    localStorage.setItem(
-        "smartMenu",
-        JSON.stringify(menu)
-    );
+  const STATUSES = ["Placed", "Preparing", "Ready", "Completed"];
 
-}
+  function showLogin(message) {
+    localStorage.removeItem("sc_token");
+    staffArea.hidden = true;
+    loginBox.hidden = false;
+    loginError.textContent = message || "";
+  }
+  function showStaff() {
+    loginBox.hidden = true;
+    staffArea.hidden = false;
+    loadMenu();
+    loadOrders();
+  }
+  // If a call fails because the token expired, go back to the login form
+  function handleError(e, target) {
+    if (e.status === 401) showLogin("Session expired. Please log in again.");
+    else if (target) target.textContent = e.message;
+  }
 
-
-// ================= DISPLAY STAFF MENU =================
-
-function displayStaffMenu() {
-
-    const container =
-        document.getElementById(
-            "staffMenuContainer"
-        );
-
-    if (!container) return;
-
-
-    const menu = getStaffMenu();
-
-    container.innerHTML = "";
-
-
-    if (menu.length === 0) {
-
-        container.innerHTML = `
-            <p class="empty-message">
-                No menu items available.
-            </p>
-        `;
-
-        return;
-
+  async function loadMenu() {
+    try {
+      menu = await api("/menu");
+      drawMenu();
+    } catch (e) {
+      handleError(e, list);
     }
+  }
+  function drawMenu() {
+    list.innerHTML = menu.length
+      ? menu.map((x) => `
+        <div class="admin-item">
+          <span class="admin-emoji">${escapeHTML(x.emoji || "🍽️")}</span>
+          <div class="admin-item-info"><strong>${escapeHTML(x.name)}</strong><small>${escapeHTML(x.category)} · ${money(x.price)}</small></div>
+          <div class="admin-actions">
+            <button data-edit="${x._id}">Edit</button>
+            <button class="delete" data-delete="${x._id}">Delete</button>
+          </div>
+        </div>`).join("")
+      : '<p class="empty">No menu items yet.</p>';
 
+    list.querySelectorAll("[data-edit]").forEach((b) => (b.onclick = () => {
+      const x = menu.find((i) => i._id === b.dataset.edit);
+      if (!x) return;
+      idField.value = x._id;
+      nameField.value = x.name;
+      priceField.value = x.price;
+      catField.value = x.category;
+      emojiField.value = x.emoji || "";
+      document.getElementById("form-heading").textContent = "Edit menu item";
+      document.getElementById("cancel-edit").hidden = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }));
 
-    menu.forEach((item, index) => {
+    list.querySelectorAll("[data-delete]").forEach((b) => (b.onclick = async () => {
+      if (!confirm("Remove this item from the menu?")) return;
+      try {
+        await api("/menu/" + b.dataset.delete, { method: "DELETE" });
+        loadMenu();
+      } catch (e) {
+        handleError(e, formError);
+      }
+    }));
+  }
 
-        const row =
-            document.createElement("div");
-
-        row.className = "staff-item";
-
-
-        row.innerHTML = `
-
-            <div class="staff-food">
-
-                <span class="staff-image">
-                    ${item.image}
-                </span>
-
-                <div>
-
-                    <h3>${item.name}</h3>
-
-                    <p>
-                        ${item.category}
-                        • ₹${item.price}
-                    </p>
-
-                </div>
-
+  async function loadOrders() {
+    ordersBox.innerHTML = "<p>Loading orders…</p>";
+    try {
+      const orders = await api("/orders");
+      ordersBox.innerHTML = orders.length
+        ? orders.map((o) => `
+          <div class="admin-item order-row">
+            <div class="admin-item-info">
+              <strong>${escapeHTML(o.number)} · ${escapeHTML(o.name)}</strong>
+              <small>${o.items.map((i) => `${escapeHTML(i.name)} × ${i.qty}`).join(", ")}</small>
+              <small>${money(o.total)} · ${paymentLabel(o)} · ${new Date(o.createdAt).toLocaleString()}</small>
             </div>
+            <select data-status="${o._id}" aria-label="Order status">
+              ${STATUSES.map((s) => `<option${s === o.status ? " selected" : ""}>${s}</option>`).join("")}
+            </select>
+          </div>`).join("")
+        : '<p class="empty">No orders yet.</p>';
 
-
-            <span class="${
-                item.availability === "Available"
-                ? "available"
-                : "not-available"
-            }">
-
-                ${item.availability}
-
-            </span>
-
-
-            <div class="staff-actions">
-
-                <button
-                    onclick="editFood(${index})"
-                >
-                    Edit
-                </button>
-
-                <button
-                    onclick="toggleAvailability(${index})"
-                >
-                    ${
-                        item.availability === "Available"
-                        ? "Disable"
-                        : "Enable"
-                    }
-                </button>
-
-                <button
-                    class="delete-btn"
-                    onclick="deleteFood(${index})"
-                >
-                    Delete
-                </button>
-
-            </div>
-
-        `;
-
-
-        container.appendChild(row);
-
-    });
-
-}
-
-
-// ================= ADD / EDIT FOOD =================
-
-function saveFood() {
-
-    const name =
-        document.getElementById(
-            "foodName"
-        ).value.trim();
-
-
-    const category =
-        document.getElementById(
-            "foodCategory"
-        ).value;
-
-
-    const price =
-        Number(
-            document.getElementById(
-                "foodPrice"
-            ).value
-        );
-
-
-    const description =
-        document.getElementById(
-            "foodDescription"
-        ).value.trim();
-
-
-    const image =
-        document.getElementById(
-            "foodImage"
-        ).value.trim();
-
-
-    const availability =
-        document.getElementById(
-            "foodAvailability"
-        ).value;
-
-
-    const editIndex =
-        Number(
-            document.getElementById(
-                "editIndex"
-            ).value
-        );
-
-
-    if (!name || !price) {
-
-        alert(
-            "Please enter food name and price."
-        );
-
-        return;
-
+      ordersBox.querySelectorAll("[data-status]").forEach((sel) =>
+        sel.addEventListener("change", async () => {
+          try {
+            await api(`/orders/${sel.dataset.status}/status`, {
+              method: "PATCH",
+              body: JSON.stringify({ status: sel.value })
+            });
+          } catch (e) {
+            handleError(e);
+            loadOrders();
+          }
+        })
+      );
+    } catch (e) {
+      handleError(e, ordersBox);
     }
+  }
 
+  function resetForm() {
+    form.reset();
+    idField.value = "";
+    formError.textContent = "";
+    document.getElementById("form-heading").textContent = "Add a menu item";
+    document.getElementById("cancel-edit").hidden = true;
+  }
 
-    const item = {
+  loginForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    loginError.textContent = "";
+    try {
+      const { token } = await api("/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          username: document.getElementById("login-user").value.trim(),
+          password: document.getElementById("login-pass").value
+        })
+      });
+      localStorage.setItem("sc_token", token);
+      loginForm.reset();
+      showStaff();
+    } catch (err) {
+      loginError.textContent = err.message;
+    }
+  });
 
-        name: name,
+  document.getElementById("logout-btn").addEventListener("click", () => showLogin());
+  document.getElementById("refresh-orders").addEventListener("click", loadOrders);
+  document.getElementById("cancel-edit").addEventListener("click", resetForm);
 
-        category: category,
-
-        price: price,
-
-        description:
-            description ||
-            "Delicious canteen food.",
-
-        image:
-            image || "🍽️",
-
-        availability:
-            availability
-
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    formError.textContent = "";
+    const body = {
+      name: nameField.value.trim(),
+      price: Number(priceField.value),
+      category: catField.value,
+      emoji: emojiField.value.trim() || "🍽️"
     };
-
-
-    const menu = getStaffMenu();
-
-
-    if (editIndex === -1) {
-
-        menu.push(item);
-
-        alert(
-            "Food item added successfully!"
-        );
-
-    } else {
-
-        menu[editIndex] = item;
-
-        alert(
-            "Food item updated successfully!"
-        );
-
+    if (!body.name || !Number.isFinite(body.price) || body.price <= 0) return;
+    try {
+      if (idField.value) {
+        await api("/menu/" + idField.value, { method: "PUT", body: JSON.stringify(body) });
+      } else {
+        await api("/menu", { method: "POST", body: JSON.stringify(body) });
+      }
+      resetForm();
+      loadMenu();
+    } catch (err) {
+      handleError(err, formError);
     }
+  });
 
-
-    saveStaffMenu(menu);
-
-    clearForm();
-
-    displayStaffMenu();
-
+  // Start: show the dashboard if a token exists (the server rejects it if it has expired)
+  if (localStorage.getItem("sc_token")) showStaff();
+  else showLogin();
 }
 
-
-// ================= EDIT =================
-
-function editFood(index) {
-
-    const menu = getStaffMenu();
-
-    const item = menu[index];
-
-
-    document.getElementById(
-        "foodName"
-    ).value = item.name;
-
-
-    document.getElementById(
-        "foodCategory"
-    ).value = item.category;
-
-
-    document.getElementById(
-        "foodPrice"
-    ).value = item.price;
-
-
-    document.getElementById(
-        "foodDescription"
-    ).value = item.description;
-
-
-    document.getElementById(
-        "foodImage"
-    ).value = item.image;
-
-
-    document.getElementById(
-        "foodAvailability"
-    ).value = item.availability;
-
-
-    document.getElementById(
-        "editIndex"
-    ).value = index;
-
-
-    document.getElementById(
-        "formTitle"
-    ).textContent =
-        "Edit Food Item";
-
-
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
-
-}
-
-
-// ================= DELETE =================
-
-function deleteFood(index) {
-
-    const menu = getStaffMenu();
-
-
-    if (
-        confirm(
-            "Are you sure you want to delete this item?"
-        )
-    ) {
-
-        menu.splice(index, 1);
-
-        saveStaffMenu(menu);
-
-        displayStaffMenu();
-
-    }
-
-}
-
-
-// ================= AVAILABILITY =================
-
-function toggleAvailability(index) {
-
-    const menu = getStaffMenu();
-
-
-    if (
-        menu[index].availability ===
-        "Available"
-    ) {
-
-        menu[index].availability =
-            "Unavailable";
-
-    } else {
-
-        menu[index].availability =
-            "Available";
-
-    }
-
-
-    saveStaffMenu(menu);
-
-    displayStaffMenu();
-
-}
-
-
-// ================= CLEAR FORM =================
-
-function clearForm() {
-
-    document.getElementById(
-        "foodName"
-    ).value = "";
-
-
-    document.getElementById(
-        "foodPrice"
-    ).value = "";
-
-
-    document.getElementById(
-        "foodDescription"
-    ).value = "";
-
-
-    document.getElementById(
-        "foodImage"
-    ).value = "";
-
-
-    document.getElementById(
-        "editIndex"
-    ).value = "-1";
-
-
-    document.getElementById(
-        "formTitle"
-    ).textContent =
-        "Add New Food Item";
-
-}
-
-
-// ================= LOAD =================
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        displayStaffMenu();
-
-    }
-);
+document.addEventListener("DOMContentLoaded", renderAdmin);

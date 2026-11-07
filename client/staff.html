@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Staff | SmartCanteen</title><link rel="stylesheet" href="style.css"></head>
+<body><header class="site-header"><a class="brand" href="index.html">🍽️ SmartCanteen</a><nav><a href="index.html">Home</a><a href="menu.html">Menu</a><a href="cart.html">Cart <span id="cart-count" class="count">0</span></a><a class="active" href="staff.html">Staff</a></nav></header>
+<main class="page-wrap">
+  <div class="page-title"><span class="eyebrow">STAFF AREA</span><h1>Manage the canteen<span>.</span></h1><p>Log in to manage the menu and track customer orders.</p></div>
+
+  <section id="login-box" class="panel form-panel login-panel" hidden>
+    <h2>Staff login</h2>
+    <form id="login-form" class="form-panel" style="padding:0;border:0;box-shadow:none">
+      <label for="login-user">Username</label>
+      <input id="login-user" required autocomplete="username">
+      <label for="login-pass">Password</label>
+      <input id="login-pass" type="password" required autocomplete="current-password">
+      <p id="login-error" class="form-error-text" role="alert"></p>
+      <button class="btn full" type="submit">Log in</button>
+    </form>
+  </section>
+
+  <div id="staff-area" hidden>
+    <p><button id="logout-btn" class="btn btn-quiet" type="button">Log out</button></p>
+    <div class="admin-layout">
+      <form id="item-form" class="panel form-panel">
+        <h2 id="form-heading">Add a menu item</h2>
+        <input type="hidden" id="item-id">
+        <label for="item-name">Item name</label>
+        <input id="item-name" required maxlength="45" placeholder="e.g. Veg sandwich">
+        <label for="item-price">Price (₹)</label>
+        <input id="item-price" type="number" min="1" max="10000" required placeholder="e.g. 60">
+        <label for="item-category">Category</label>
+        <select id="item-category"><option>Meals</option><option>Snacks</option><option>Drinks</option></select>
+        <label for="item-emoji">Food emoji</label>
+        <input id="item-emoji" maxlength="4" placeholder="🥪">
+        <p id="form-error" class="form-error-text" role="alert"></p>
+        <button class="btn full" type="submit">Save item</button>
+        <button class="btn btn-quiet full" id="cancel-edit" type="button" hidden>Cancel edit</button>
+      </form>
+      <section class="panel admin-list"><h2>Current menu</h2><div id="admin-items"></div></section>
+    </div>
+
+    <section class="panel admin-list orders-panel">
+      <h2>Recent orders <button id="refresh-orders" class="small-btn" type="button">Refresh</button></h2>
+      <div id="admin-orders"></div>
+    </section>
+  </div>
+</main>
+<footer>© 2026 SmartCanteen</footer><script src="script.js"></script><script src="staff.js"></script></body></html>

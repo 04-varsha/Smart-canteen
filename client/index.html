@@ -1,152 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SmartCanteen | Home</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SmartCanteen | Home</title><link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
-<nav class="navbar">
-    <div class="logo">🍴 SmartCanteen</div>
-
-    <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="menu.html">Menu</a>
-        <a href="index.html#about">About</a>
-        <a href="staff.html">Staff</a>
-    </div>
-
-    <a href="menu.html" class="nav-btn">Order Now</a>
-</nav>
-
-
-<section class="hero">
-
-    <div class="hero-content">
-
-        <p class="small-title">WELCOME TO SMARTCANTEEN</p>
-
-        <h1>
-            Your Campus Food,
-            <span>One Click Away.</span>
-        </h1>
-
-        <p>
-            Browse your college canteen menu, choose your favourite
-            food, place your order and pay easily online.
-        </p>
-
-        <div class="hero-buttons">
-            <a href="menu.html" class="primary-btn">Explore Menu →</a>
-            <a href="#about" class="secondary-btn">Learn More</a>
-        </div>
-
-    </div>
-
-    <div class="hero-food">
-        <div class="food-circle">🍔</div>
-        <h2>Fresh. Simple. Smart.</h2>
-        <p>Everything you need from your campus canteen.</p>
-    </div>
-
-</section>
-
-
-<section class="features">
-
-    <div class="section-title">
-        <p>WHY SMARTCANTEEN?</p>
-        <h2>Everything Made Simple</h2>
-    </div>
-
-    <div class="feature-grid">
-
-        <div class="feature-card">
-            <div class="feature-icon">🍽️</div>
-            <h3>Browse Menu</h3>
-            <p>
-                Explore food items, prices, categories and availability.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">🛒</div>
-            <h3>Easy Ordering</h3>
-            <p>
-                Select your favourite food and add it to your cart.
-            </p>
-        </div>
-
-        <div class="feature-card">
-            <div class="feature-icon">💳</div>
-            <h3>Easy Payment</h3>
-            <p>
-                Complete your order with a simple online payment.
-            </p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="how">
-
-    <div class="section-title">
-        <p>HOW IT WORKS</p>
-        <h2>Three Simple Steps</h2>
-    </div>
-
-    <div class="steps">
-
-        <div class="step">
-            <div class="step-number">1</div>
-            <h3>Browse</h3>
-            <p>Explore the available menu.</p>
-        </div>
-
-        <div class="step">
-            <div class="step-number">2</div>
-            <h3>Order</h3>
-            <p>Add food to your cart and place your order.</p>
-        </div>
-
-        <div class="step">
-            <div class="step-number">3</div>
-            <h3>Pay</h3>
-            <p>Make your payment and confirm your order.</p>
-        </div>
-
-    </div>
-
-</section>
-
-
-<section class="about" id="about">
-
-    <div>
-        <p class="small-title">ABOUT SMARTCANTEEN</p>
-
-        <h2>Making Campus Food Smarter</h2>
-
-        <p>
-            SmartCanteen is a digital food ordering platform designed
-            for college students. Students can easily browse the
-            canteen menu, place orders and make payments online.
-        </p>
-    </div>
-
-</section>
-
-
-<footer>
-    <h2>🍴 SmartCanteen</h2>
-    <p>Smart food ordering for a smarter campus.</p>
-    <p class="copyright">© 2026 SmartCanteen</p>
-</footer>
-
-</body>
-</html>v
+  <header class="site-header"><a class="brand" href="index.html">🍽️ SmartCanteen</a>
+    <nav><a class="active" href="index.html">Home</a><a href="menu.html">Menu</a><a href="cart.html">Cart <span id="cart-count" class="count">0</span></a><a href="staff.html">Staff</a></nav>
+  </header>
+  <main>
+    <section class="hero"><div class="hero-copy"><span class="eyebrow">CAMPUS FOOD, MADE SIMPLE</span><h1>Your campus cravings,<br><em>one click away.</em></h1><p>Browse the canteen menu, add your favourites and place your order without standing in a long queue.</p><a class="btn" href="menu.html">Explore the menu <span>→</span></a></div><div class="hero-art"><div class="food-orbit">🍔</div><div class="food-small one">🍟</div><div class="food-small two">🥤</div><div class="food-note">Fresh · Quick · Convenient</div></div></section>
+    <section class="section"><div class="section-heading"><div><span class="eyebrow">HOW IT WORKS</span><h2>Good food in 3 steps</h2></div></div>
+      <div class="steps"><article class="step-card"><b>01</b><div class="step-icon">📋</div><h3>Choose your food</h3><p>Explore the menu and find something you love.</p></article><article class="step-card"><b>02</b><div class="step-icon">🛒</div><h3>Add to your cart</h3><p>Pick quantities and review your order.</p></article><article class="step-card"><b>03</b><div class="step-icon">🎫</div><h3>Place your order</h3><p>Confirm and receive your unique order number.</p></article></div>
+    </section>
+    <section class="cta-strip"><div><span class="eyebrow">READY WHEN YOU ARE</span><h2>What's on your plate today?</h2></div><a class="btn btn-light" href="menu.html">View menu →</a></section>
+  </main>
+  <footer>© 2026 SmartCanteen · A student-friendly campus food ordering demo</footer>
+  <script src="script.js"></script>
+</body></html>
